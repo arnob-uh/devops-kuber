@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splitlog-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: splitlog
+  template:
+    metadata:
+      labels:
+        app: splitlog
+    spec:
+      volumes:
+        - name: shared-log
+          emptyDir: {}
+      containers:
+        - name: writerapp
+          image: arnobgw/writerapp:latest
+          volumeMounts:
+          - name: shared-log
+            mountPath: /usr/src/app/files
+        - name: readerapp
+          image: arnobgw/readerapp:latest
+          volumeMounts:
+          - name: shared-log
+            mountPath: /usr/src/app/files
